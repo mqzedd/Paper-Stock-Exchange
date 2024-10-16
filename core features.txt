@@ -1,0 +1,41 @@
+List the core features of your solution and describe each of the core features. For each core feature, consider:
+Stock search?
+
+Stock view?
+
+Portfolio view?
+
+
+
+STOCK SEARCH
+
+What is the purpose of the feature (what core functionality will it provide)? 
+This feature will allow the user to search for new stocks, and link them to the stock view page that relates to the the stock they searched for
+
+What data will be used by the feature and will the data come from the user, a file, or another system?
+The system will need to know the full name and NYSE abbreviation for the company, which will come from a file.
+
+What will be the interaction between the user and this feature?
+The user will use a search bar to interact with this feature
+
+What other features, if any, will this feature interact with?
+This will interact with the stock view by the search linking to it
+
+What other systems, if any, will this feature interact with?
+None
+
+
+STOCK VIEW
+
+What is the purpose of the feature (what core functionality will it provide)?
+The stock view will provide relavant information(such as price history and % change over different time frames), as well as an option to buy and sell shares of the stock as part of your portfolio
+
+What data will be used by the feature and will the data come from the user, a file, or another system?
+The stock view will need to know the stock, supplied by the stock search or portfolio view, and will use that to fetch data using either the NYSE API or the YFINANCE API
+What will be the interaction between the user and this feature?
+the user will be able to access the stock view directly as it's own webpage, with buttons to buy and sell, and graphs to show them the relevant information in a digestable manner
+
+What other features, if any, will this feature interact with?
+STOCK SEARCH
+PORTFLIO VIEW
+What other systems, if any, will this feature interact with?
