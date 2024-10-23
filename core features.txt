@@ -39,6 +39,3 @@ What other features, if any, will this feature interact with?
 STOCK SEARCH
 PORTFLIO VIEW
 What other systems, if any, will this feature interact with?
-
-
-test
