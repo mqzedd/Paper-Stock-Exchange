@@ -10,9 +10,17 @@ def init():
     price_cache = {}  # stock_id: price
 
 
+# portfolio graphs should be YTD
+
+
 def price(stock_id):
     # get price of stock using API
     return 100
+
+
+def search(search_term):
+    results = []
+    return results
 
 
 def update_portfolio():
@@ -21,7 +29,10 @@ def update_portfolio():
         price_cache[stock_id] = price(stock_id)
     # find price of every stock in portfolio - cache in a dictionary
     # determine total value of portfolio
-    pass
+    value = 0
+    for stock_id in portfolio:
+        value += portfolio[stock_id][0] * price_cache[stock_id]
+    return value
 
 
 def buy_stock(stock_id, cost):
@@ -65,6 +76,11 @@ def sell_stock(stock_id, cost=all):
         ]
         balance += price(stock_id) * quantity
     return True
+
+
+def main_page():  # requests and data needed for display on the main page
+    update_portfolio()
+    pass
 
 
 def main():
