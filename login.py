@@ -12,5 +12,7 @@ def validate_pwd(username, password):
 
 def login(username, password):
     if validate_pwd(username, password):
+        # do authentication
+        # get user data
         return True
     return False

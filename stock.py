@@ -4,6 +4,7 @@ import requests
 def init():
     global portfolio
     global balance
+    global price_cache
     # get portfolio and balance from database
     portfolio = {}  # stock_id: [quantity, average_price]
     balance = 0  # in dollars (USD)?
