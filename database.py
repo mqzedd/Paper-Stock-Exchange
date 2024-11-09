@@ -16,9 +16,14 @@ def update_data(userid, data):
     cursor.execute('UPDATE users SET data = ? WHERE id = ?', (data, userid))
 
 
-def fetch_hash(username):
-    #using the username, fetch the hash from the database
-    cursor.execute('SELECT password_hash FROM users WHERE username = ?', (username))# replace with username,
+def fetch_login_data(username):
+    #using the username, fetch the hash and id of the user
+    cursor.execute('SELECT id, password_hash FROM users WHERE username = ?', (username))
+    return cursor.fetchone()
+    if row:
+        user_id, password_hash = row
+        return user_id, password_hash
+    return None
 
 def get_next_userid():
     #get the next user id to be assigned to a new user
