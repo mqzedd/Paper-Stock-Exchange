@@ -13,7 +13,8 @@ def init():
 
 # portfolio graphs should be YTD
 
-
+#https://rapidapi.com/apidojo/api/yahoo-finance1
+#https://www.alphavantage.co/documentation/
 def price(stock_id):
     # get price of stock using API
     return 100
