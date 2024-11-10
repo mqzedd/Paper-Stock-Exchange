@@ -1,4 +1,5 @@
 import requests
+import yfinance as yf
 
 
 def init():
@@ -13,11 +14,15 @@ def init():
 
 # portfolio graphs should be YTD
 
-#https://rapidapi.com/apidojo/api/yahoo-finance1
-#https://www.alphavantage.co/documentation/
+
+# https://rapidapi.com/apidojo/api/yahoo-finance1
+# https://www.alphavantage.co/documentation/
 def price(stock_id):
+
+    info = yf.Ticker(stock_id)
+
     # get price of stock using API
-    return 100
+    return round(info.history(period="1d")["Close"].values[0], 2)
 
 
 def search(search_term):

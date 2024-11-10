@@ -7,4 +7,4 @@ tickers = yf.Tickers("goog")
 # print(tickers.tickers["MSFT"].info)
 # extract the close value from the google dataframe
 print(str(round(tickers.tickers["GOOG"].history(period="1d")["Close"].values[0], 2)))
-# ask about pandas and how to get this value rom the dataframe
+# ask about pandas and how to get this value rom the
