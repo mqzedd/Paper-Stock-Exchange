@@ -17,12 +17,12 @@ def init():
 
 # https://rapidapi.com/apidojo/api/yahoo-finance1
 # https://www.alphavantage.co/documentation/
-def price(stock_id):
-
+def price(stock_id):  # get price of stock using API, caching it for later use
+    global price_cache
     info = yf.Ticker(stock_id)
-
-    # get price of stock using API
-    return round(info.history(period="1d")["Close"].values[0], 2)
+    stock_price = round(info.history(period="1d")["Close"].values[0], 2)
+    price_cache[stock_id] = stock_price
+    return stock_price
 
 
 def search(search_term):
@@ -32,13 +32,17 @@ def search(search_term):
 
 def update_portfolio():
     global price_cache
+    portflio_string = " ".join(portfolio.keys()).lower()
+    tickers = yf.Tickers(portflio_string)
     for stock_id in portfolio:
-        price_cache[stock_id] = price(stock_id)
-    # find price of every stock in portfolio - cache in a dictionary
-    # determine total value of portfolio
+        price_cache[stock_id] = round(
+            tickers.tickers[stock_id].history(period="1d")["Close"].values[0], 2
+        )
+
     value = 0
     for stock_id in portfolio:
         value += portfolio[stock_id][0] * price_cache[stock_id]
+
     return value
 
 
