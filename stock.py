@@ -90,10 +90,10 @@ def buy_stock(stock_id, cost):
             )
             / (portfolio[stock_id][0] + quantity),
         ]  # updates quantity and average price
-        balance -= price(stock_id) * quantity
+
     else:
         portfolio[stock_id] = [quantity, price(stock_id)]
-        balance -= price(stock_id) * quantity
+    balance -= cost
     return True
 
 
@@ -115,7 +115,7 @@ def sell_stock(stock_id, cost=all):
             portfolio[stock_id][0] - quantity,
             portfolio[stock_id][1],
         ]
-        balance += price(stock_id) * quantity
+        balance += cost  # cost can be used as it is substituted for price(stock_id) * portfolio_quantity in the case cost == all
     return True
 
 
