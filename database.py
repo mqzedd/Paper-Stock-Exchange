@@ -7,7 +7,7 @@ cx = db.cursor()
 # database has
 # id | username | password_hash | data
 cx.execute(
-    "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT, data TEXT)"
+    "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT, portfolio TEXT, balance REAL)"
 )
 # create another database for price_cache
 cx.execute("CREATE TABLE IF NOT EXISTS price_cache (stock_id TEXT, price REAL)")
@@ -15,14 +15,18 @@ db.commit()
 
 
 def fetch_data(userid):
-    # fetch data for the user, given userid
-    cx.execute("SELECT data FROM users WHERE id = ?", (userid))
-    return cx.fetchone()[0]
+    # fetch portfolio and balance for the user, given userid
+    cx.execute("SELECT portfolio, balance FROM users WHERE id = ?", (userid,))
+
+    return
 
 
-def update_data(userid, data):
-    # update the data for the user, given userid
-    cx.execute("UPDATE users SET data = ? WHERE id = ?", (data, userid))
+def update_data(userid, portfolio, balance):
+    # update the portfolio and balance for the user, given userid
+    cx.execute(
+        "UPDATE users SET portfolio = ?, balance = ? WHERE id = ?",
+        (portfolio, balance, userid),
+    )
     db.commit()
 
 
@@ -31,8 +35,9 @@ def fetch_login_data(username):
     result = cx.execute(
         "SELECT id, password_hash FROM users WHERE username = ?", (username,)
     )
-    if result:
-        user_id, password_hash = result.fetchone()
+    row = result.fetchone()
+    if row:
+        user_id, password_hash = row
         return user_id, password_hash
     return None
 
@@ -54,10 +59,13 @@ def register_user(username, hash):
     )  # replace with username,
     if result.fetchone():
         return False
+    portfolio = {}
+    # insert get_next_userid(),username,hash,portfolio, and a starting balance of 10k to the sql database
     cx.execute(
-        "INSERT INTO users (id, username, password_hash) VALUES (?, ?, ?)",
-        (get_next_userid(), username, hash),
+        "INSERT INTO users (id, username, password_hash, portfolio, balance) VALUES (?, ?, ?, ?, ?)",
+        (get_next_userid(), username, hash, str(portfolio), 10000),
     )
+
     db.commit()
     return True
 
