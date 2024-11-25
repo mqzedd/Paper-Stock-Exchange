@@ -1,7 +1,6 @@
 import database
-import cryptography
 import bcrypt
-from database import fetch_login_data
+import database
 
 
 def register(username, password):

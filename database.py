@@ -9,6 +9,8 @@ cx = db.cursor()
 cx.execute(
     "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT, data TEXT)"
 )
+# create another database for price_cache
+cx.execute("CREATE TABLE IF NOT EXISTS price_cache (stock_id TEXT, price REAL)")
 db.commit()
 
 
