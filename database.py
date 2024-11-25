@@ -14,11 +14,44 @@ cx.execute("CREATE TABLE IF NOT EXISTS price_cache (stock_id TEXT, price REAL)")
 db.commit()
 
 
-def fetch_data(userid):
+def fetch_portfolio(userid):
     # fetch portfolio and balance for the user, given userid
-    cx.execute("SELECT portfolio, balance FROM users WHERE id = ?", (userid,))
+    cx.execute("SELECT portfolio FROM users WHERE id = ?", (userid,))
+    row = cx.fetchone()
+    if row:
+        return row[0]
+    return None
 
-    return
+
+def fetch_balance(userid):
+    # fetch portfolio and balance for the user, given userid
+    cx.execute("SELECT balance FROM users WHERE id = ?", (userid,))
+    row = cx.fetchone()
+    if row:
+        return row[0]
+    return None
+
+
+def fetch_price_cache(portfolio):
+    # fetch the price cache using the keys from the portfolio dictionary as the stock_id, and return a dictionary with the stock_id and price for the stock's in the portfolio
+    cx.execute("SELECT * FROM price_cache")
+    cache = dict(cx.fetchall())
+    cache = {
+        stock_id: int(price)
+        for stock_id, price in cache.items()
+        if stock_id in portfolio
+    }
+    return cache
+
+
+def update_price_cache(cache):
+    # given a dictionary containing the stock_id and price, update the prices for the stocks prsent in the dictionary
+    for stock_id, price in cache.items():
+        cx.execute(
+            "UPDATE price_cache SET price = ? WHERE stock_id = ?", (price, stock_id)
+        )
+    db.commit()
+    pass
 
 
 def update_data(userid, portfolio, balance):
@@ -69,8 +102,6 @@ def register_user(username, hash):
     db.commit()
     return True
 
-
-# print db
 
 if __name__ == "__main__":
     result = cx.execute("SELECT * FROM users")
