@@ -13,11 +13,17 @@
         <h1>Welcome to Our App!</h1>
         <p>Welcome back, User {{ user_id }}!</p>
         <p>Balance = {{ balance }}</p>
-        <p>Total value of account {{ }}</p>
-        <a href="{{ url_for('index') }}">Go to Dashboard</a> |
+        <p>Portfolio value = {{ value-balance }}</p>
+        <p>Total value of account = {{ value }}</p>
+        <p>Account value change {{ (value-10000)/10000 *100}}%</p>
         <a href="{{ url_for('logout') }}">Logout</a>
 
     </div>
+    <!-- mislabelled but i dont have time to fix and it works ok -->
+    <form action="{{ url_for('search') }}" method="post"> <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Login</button>
+    </form>
 </body>
 
 </html>

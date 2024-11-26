@@ -1,6 +1,5 @@
 import database
 import bcrypt
-import database
 
 
 def register(username, password):

@@ -3,27 +3,11 @@ import requests
 import yfinance as yf
 from dotenv import load_dotenv
 import os
+import database
 
 load_dotenv()
 polygon_api_key = os.getenv("POLY_KEY")
 alphavantage_api_key = os.getenv("ALPHA_KEY")
-
-
-def init():
-    global portfolio
-    global balance
-    global price_cache
-    load_dotenv()
-    polygon_api_key = os.getenv("POLY_KEY")
-    alphavantage_api_key = os.getenv("ALPHA_KEY")
-
-    # get portfolio and balance from database
-    portfolio = {}  # stock_id: [quantity, average_price]
-    balance = 0  # in dollars (USD)?
-    price_cache = {}  # stock_id: price
-
-
-init()
 
 
 # portfolio graphs should be YTD
@@ -47,31 +31,49 @@ def portfolio_graph(user_id):
 # https://rapidapi.com/apidojo/api/yahoo-finance1
 # https://www.alphavantage.co/documentation/
 def price(stock_id):  # get price of stock using API, caching it for later use
-    url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock_id}&apikey={alphavantage_api_key}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        price = data.get("Global Quote", {}).get("05. price")
-        if price:
-            print(f"The price of AAPL is: {price}")
-            return int(price)
-        else:
-            print("Price not found in the response.")
+    url = f"https://api.polygon.io/v2/aggs/ticker/{stock_id.upper()}/prev?adjusted=true&apiKey={polygon_api_key}"
+    response = requests.get(url).json()
+    if response["results"][0]["T"] == stock_id.upper():
+        price = response["results"][0]["c"]
+        print(f"The price of {stock_id} is: {price}")
+        database.update_price_cache({stock_id.upper(): price})
+        return float(price)
     else:
-        print(f"Request failed with status code {response.status_code}")
-    return None
+        print(response["results"][0]["T"] + " does not match " + stock_id.upper())
+        price = response["results"][0]["c"]
+        print(f"The price of {stock_id} is: {price}")
+        database.update_price_cache({stock_id: price})
+        return price
+    # url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock_id}&apikey={alphavantage_api_key}"
+    # response = requests.get(url)
+    # if response.status_code == 200:
+    #     data = response.json()
+    #     price = data.get("Global Quote", {}).get("05. price")
+    #     if price:
+    #         print(f"The price of {stock_id} is: {price}")
+    #         database.update_price_cache({stock_id: price})
+    #         return int(price)
+    #     else:
+    #         print("Price not found in the response.")
+    # else:
+    #     print(f"Request failed with status code {response.status_code}")
+    # return None
 
 
 def search(search_term):
     url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={search_term}&apikey={alphavantage_api_key}"
     r = requests.get(url)
     data = r.json()
+    print(data)
     return data
 
 
 # pd dataframe
-def update_portfolio():
-    global price_cache
+def update_portfolio(user_id):
+    portfolio = database.fetch_portfolio(user_id)
+    if portfolio == {}:
+        return 0
+    price_cache = database.fetch_price_cache(portfolio)
     portflio_string = " ".join(portfolio.keys()).lower()
     tickers = yf.Tickers(portflio_string)
     for stock_id in portfolio:
@@ -81,11 +83,25 @@ def update_portfolio():
     value = 0
     for stock_id in portfolio:
         value += portfolio[stock_id][0] * price_cache[stock_id]
+    database.update_price_cache(price_cache)
     return value
+    pass
+    # global price_cache
+    # portflio_string = " ".join(portfolio.keys()).lower()
+    # tickers = yf.Tickers(portflio_string)
+    # for stock_id in portfolio:
+    #     price_cache[stock_id] = round(
+    #         tickers.tickers[stock_id].history(period="1d")["Close"].values[0], 2
+    #     )
+    # value = 0
+    # for stock_id in portfolio:
+    #     value += portfolio[stock_id][0] * price_cache[stock_id]
+    # return value
 
 
-def buy_stock(stock_id, cost):
-    global portfolio
+def buy_stock(user_id, stock_id, cost):
+    portfolio = database.fetch_portfolio(user_id)
+    balance = database.fetch_balance(user_id)
     if balance < cost:
         return False
     quantity = cost / price(stock_id)
@@ -102,11 +118,14 @@ def buy_stock(stock_id, cost):
     else:
         portfolio[stock_id] = [quantity, price(stock_id)]
     balance -= cost
+    database.update_data(user_id, portfolio, balance)
     return True
 
 
-def sell_stock(stock_id, cost=all):
-    global portfolio
+def sell_stock(user_id, stock_id, cost=all):
+    portfolio = database.fetch_portfolio(user_id)
+    balance = database.fetch_balance(user_id)
+
     portfolio_quantity = portfolio[stock_id][0]
     if stock_id not in portfolio:
         return False
@@ -124,15 +143,12 @@ def sell_stock(stock_id, cost=all):
             portfolio[stock_id][1],
         ]
         balance += cost  # cost can be used as it is substituted for price(stock_id) * portfolio_quantity in the case cost == all
+    database.update_data(user_id, portfolio, balance)
     return True
 
 
-def main_page():  # requests and data needed for display on the main page
-    update_portfolio()
-    pass
-
-
 def main():
+    price("AAPL")
     pass
 
 

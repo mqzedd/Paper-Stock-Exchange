@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .result-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .result-item p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Stock Search Results</h1>
+    <div class="search-results" id="searchResults"></div>
+
+    <script>
+        // Example JSON response from the API
+        const api_data = {{ data| tojson }}; // converts api response to json so that it can be used in javascript
+
+
+        function renderResults(data) {
+            const resultsContainer = document.getElementById('searchResults');
+            data.bestMatches.forEach(match => {
+                // Create a div for each result
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+
+                // Add add stock id and name to the div
+                resultItem.innerHTML = `<h3>${match['1. symbol']}</h3><p>${match['2. name']}</p>`;
+
+                // add the item to the container
+                resultsContainer.appendChild(resultItem);
+            }
+            );
+        }
+        renderResults(api_data);
+    </script>
+</body>
+
+</html>
