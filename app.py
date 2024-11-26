@@ -5,6 +5,7 @@ import login as lg
 from dotenv import load_dotenv
 import os
 import stock
+from stock import price as stock_price
 
 load_dotenv()
 flask_secret_key = os.getenv("flask_secret")
@@ -26,7 +27,7 @@ def index():
             user_id=session["user_id"],
             balance=database.fetch_balance(session["user_id"]),
             value=int(database.fetch_balance(session["user_id"]))
-            + (stock.update_portfolio(session["user_id"])),
+            + (st.update_portfolio(session["user_id"])),
         )
     return render_template("index.html")
 
@@ -148,7 +149,16 @@ def search(search_term):
             },
         ]
     }
-    return render_template("search.html", data=data)
+    return render_template("search.html", data=data, search_term=search_term)
+
+
+@app.route("/stock/<stock_id>")
+def st(stock_id):
+    # data = stock.search(search_term)
+    # data = '"{"ticker":"AAP","queryCount":1,"resultsCount":1,"adjusted":true,"results":[{"T":"AAP","v":3.044229e+06,"vw":43.1966,"o":41.76,"c":43.42,"h":43.74,"l":41.3975,"t":1732568400000,"n":36380}],"status":"OK","request_id":"19782cc635bbc5592e13d8b788daec40","count":1}"'
+    # data = data.json()
+    price = stock_price(stock_id)
+    return render_template("stock.html", price=price, stock_id=stock_id)
 
 
 #
