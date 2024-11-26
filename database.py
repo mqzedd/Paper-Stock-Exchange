@@ -33,7 +33,7 @@ def fetch_balance(userid):
     cx.execute("SELECT balance FROM users WHERE id = ?", (userid,))
     row = cx.fetchone()
     if row:
-        return int(row[0])
+        return float(row[0])
     return None
 
 
@@ -42,7 +42,7 @@ def fetch_price_cache(portfolio):
     cx.execute("SELECT * FROM price_cache")
     cache = dict(cx.fetchall())
     cache = {
-        stock_id: int(price)
+        stock_id: float(price)
         for stock_id, price in cache.items()
         if stock_id in portfolio
     }
