@@ -19,7 +19,12 @@ def fetch_portfolio(userid):
     cx.execute("SELECT portfolio FROM users WHERE id = ?", (userid,))
     row = cx.fetchone()
     if row:
-        return row[0]
+        print(type(row[0]))
+        if row[0] == "{}":
+            return {}
+        else:
+            return dict(row[0])
+        return
     return None
 
 
@@ -28,7 +33,7 @@ def fetch_balance(userid):
     cx.execute("SELECT balance FROM users WHERE id = ?", (userid,))
     row = cx.fetchone()
     if row:
-        return row[0]
+        return int(row[0])
     return None
 
 
@@ -96,7 +101,7 @@ def register_user(username, hash):
     # insert get_next_userid(),username,hash,portfolio, and a starting balance of 10k to the sql database
     cx.execute(
         "INSERT INTO users (id, username, password_hash, portfolio, balance) VALUES (?, ?, ?, ?, ?)",
-        (get_next_userid(), username, hash, str(portfolio), 10000),
+        (get_next_userid(), username, hash, portfolio, 10000),
     )
 
     db.commit()
