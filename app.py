@@ -167,6 +167,37 @@ def st(stock_id):
     return render_template("stock.html", price=price, stock_id=stock_id, amount=amount)
 
 
+@app.route("/buy/<stock_id>", methods=["POST", "GET"])
+def buy(stock_id):
+    if request.method == "POST":
+        stock_id = stock_id
+        cost = request.form.get("cost")
+        user_id = session["user_id"]
+        if stock.buy_stock(user_id, stock_id, cost):
+            return redirect(url_for("index"))
+            # return redirect(f"/stock/{stock_id}")
+
+        else:
+            return render_template(
+                "stock", stock_id=stock_id, additional_message="transaction failed"
+            )
+
+
+@app.route("/sell/<stock_id>", methods=["POST", "GET"])
+def sell(stock_id):
+    if request.method == "POST":
+        stock_id = stock_id
+        cost = request.form.get("cost")
+        user_id = session["user_id"]
+        if stock.sell_stock(user_id, stock_id, cost):
+            return redirect(url_for("index"))
+            # return redirect(f"/stock/{stock_id}")
+        else:
+            return render_template(
+                "stock", stock_id=stock_id, additional_message="transaction failed"
+            )
+
+
 #
 #    if request.method == "POST":
 #        term = request.form.get("stock_search_term")
