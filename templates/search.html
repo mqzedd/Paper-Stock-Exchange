@@ -51,24 +51,18 @@
                 const resultDiv = document.createElement('div');
                 resultDiv.className = 'result-item'; // Add a class for styling
 
-                // Create an anchor tag that wraps the whole div
                 const resultLink = document.createElement('a');
-
-                // Set the href for the anchor tag to the dynamic URL
                 resultLink.href = `/stock/${match['1. symbol']}`;
-                resultLink.style.textDecoration = 'none'; // Remove default underline for the link
+                resultLink.style.textDecoration = 'none';
 
-                // Append the content to the resultDiv
                 resultDiv.innerHTML = `
     <h3>${match['1. symbol']}</h3>
     <p>${match['2. name']}</p>
     <p>${match['4. region']}</p>
   `;
 
-                // Append the resultDiv to the resultLink, making the entire div clickable
                 resultLink.appendChild(resultDiv);
 
-                // Finally, append the resultLink to the resultsContainer
                 resultsContainer.appendChild(resultLink);
             });
         }
