@@ -158,7 +158,13 @@ def st(stock_id):
     # data = '"{"ticker":"AAP","queryCount":1,"resultsCount":1,"adjusted":true,"results":[{"T":"AAP","v":3.044229e+06,"vw":43.1966,"o":41.76,"c":43.42,"h":43.74,"l":41.3975,"t":1732568400000,"n":36380}],"status":"OK","request_id":"19782cc635bbc5592e13d8b788daec40","count":1}"'
     # data = data.json()
     price = stock_price(stock_id)
-    return render_template("stock.html", price=price, stock_id=stock_id)
+    user_id = session["user_id"]
+    portfolio = database.fetch_portfolio(user_id)
+    amount = 0
+    if stock_id.upper() in portfolio:
+        amount = int(portfolio[stock_id.upper()][0])
+        print(f"amount: {amount}")
+    return render_template("stock.html", price=price, stock_id=stock_id, amount=amount)
 
 
 #
