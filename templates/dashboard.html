@@ -7,10 +7,34 @@
     <title>Paper Stock Exchange</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+<!-- add styling for the portfolio to display it on the right side -->
+<style>
+    .container {
+        width: 70%;
+        float: left;
+    }
+
+    .portfolio {
+        width: 30%;
+        float: right;
+    }
+
+    .stock-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <body>
+    {% if session.get('user_id') %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+    <p>You are not logged in.</p>
+    <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
     <div class="container">
-        <h1>Welcome to Our App!</h1>
+        <h1>Welcome to the stock exchange</h1>
         <p>Welcome back, User {{ user_id }}!</p>
         <p>Balance = {{ balance }}</p>
         <p>Portfolio value = {{ value-balance }}</p>
@@ -19,6 +43,22 @@
         <a href="{{ url_for('logout') }}">Logout</a>
 
     </div>
+    <div class="portfolio">
+        <h2>Your Portfolio</h2>
+        <ul>
+            {% for stock_id, details in portfolio.items() %}
+            <li>
+                <div class="stock-item">
+                    <p>Stock ID: {{ stock_id }}</p>
+                    <p>Quantity: {{ details[0] }}</p>
+                    <p>Average Price: {{ details[1] }}</p>
+                    <p>Total Value: {{ details[0] * details[1] | round(2)}}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <!-- mislabelled but i dont have time to fix and it works ok -->
     <form id="searchForm">
         <label for="search">Search:</label>
@@ -33,6 +73,7 @@
             form.action = `/search/${encodeURIComponent(searchTerm)}`;
         };
     </script>
+
 </body>
 
 </html>
