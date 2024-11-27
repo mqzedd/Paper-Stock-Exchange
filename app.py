@@ -27,7 +27,8 @@ def index():
             user_id=session["user_id"],
             balance=database.fetch_balance(session["user_id"]),
             value=int(database.fetch_balance(session["user_id"]))
-            + (st.update_portfolio(session["user_id"])),
+            + (stock.update_portfolio(session["user_id"])),
+            portfolio=database.fetch_portfolio(session["user_id"]),
         )
     return render_template("index.html")
 
