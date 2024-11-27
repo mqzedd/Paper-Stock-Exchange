@@ -78,7 +78,6 @@ def logout():
 
 @app.route("/search/<search_term>")
 def search(search_term):
-    # data = stock.search(search_term)
     data = {
         "bestMatches": [
             {
@@ -149,6 +148,7 @@ def search(search_term):
             },
         ]
     }
+    data = stock.search(search_term)
     return render_template("search.html", data=data, search_term=search_term)
 
 
