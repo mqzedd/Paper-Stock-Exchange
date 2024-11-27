@@ -2,6 +2,26 @@
 <br>
 {{ price }}
 
-<!-- add a form for buying stock -->
+<!-- add a form for buying stock-->
+
+<div>
+    <form action="/buy/{{ stock_id }}" method="post">
+        <label for="cost">Amount ($):</label>
+        <input type="number" id="cost" name="cost" requiredss><br><br>
+        <button type="submit">Buy Stock</button>
+    </form>
+</div>
 
 <!-- add a form for selling stock, but only display it if you have bought stock, using flask conditionals -->
+{% if amount > 0 %}
+<div>
+    <form action="/sell/{{ stock_id }}" method="post">
+        <label for="cost">cost ($):</label>
+        <input type="number" id="cost" name="cost"><br><br>
+        <button type="submit">Sell Stock</button>
+    </form>
+</div>
+{% endif %}
+
+<a href="{{ url_for('index') }}">Go to Dashboard</a> |
+<!-- link back to index -->
