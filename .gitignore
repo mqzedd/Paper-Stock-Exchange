@@ -5,3 +5,5 @@ test.py
 *.db
 todo.txt
 
+count.py
+/__pycache__
