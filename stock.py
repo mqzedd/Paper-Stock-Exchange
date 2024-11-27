@@ -33,6 +33,10 @@ def portfolio_graph(user_id):
 def price(stock_id):  # get price of stock using API, caching it for later use
     url = f"https://api.polygon.io/v2/aggs/ticker/{stock_id.upper()}/prev?adjusted=true&apiKey={polygon_api_key}"
     response = requests.get(url).json()
+    print(response)
+    if int(response["queryCount"]) == 0:
+        print(f"{stock_id} not found")
+        return None
     if response["results"][0]["T"] == stock_id.upper():
         price = response["results"][0]["c"]
         print(f"The price of {stock_id} is: {price}")
@@ -86,13 +90,15 @@ def update_portfolio(user_id):
     database.update_price_cache(price_cache)
     return value
     pass
-    # global price_cache
+    # portfolio = database.fetch_portfolio(user_id)
+    # price_cache = database.fetch_price_cache(portfolio)
     # portflio_string = " ".join(portfolio.keys()).lower()
     # tickers = yf.Tickers(portflio_string)
     # for stock_id in portfolio:
     #     price_cache[stock_id] = round(
     #         tickers.tickers[stock_id].history(period="1d")["Close"].values[0], 2
     #     )
+    # database.update_price_cache(price_cache)
     # value = 0
     # for stock_id in portfolio:
     #     value += portfolio[stock_id][0] * price_cache[stock_id]
@@ -100,6 +106,7 @@ def update_portfolio(user_id):
 
 
 def buy_stock(user_id, stock_id, cost):
+    cost = float(cost)
     portfolio = database.fetch_portfolio(user_id)
     balance = database.fetch_balance(user_id)
     if balance < cost:
@@ -123,6 +130,8 @@ def buy_stock(user_id, stock_id, cost):
 
 
 def sell_stock(user_id, stock_id, cost=all):
+    if cost != all:
+        cost = float(cost)
     portfolio = database.fetch_portfolio(user_id)
     balance = database.fetch_balance(user_id)
 
