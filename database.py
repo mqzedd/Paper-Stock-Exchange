@@ -1,6 +1,6 @@
 #  This file contains the database functions that are used to interact with the database.
 import sqlite3
-
+import json
 
 db = sqlite3.connect("database.db", check_same_thread=False)
 cx = db.cursor()
@@ -23,7 +23,8 @@ def fetch_portfolio(userid):
         if row[0] == "{}":
             return {}
         else:
-            return dict(row[0])
+            dictionary = json.loads(row[0])
+            return dictionary
         return
     return None
 
@@ -61,6 +62,7 @@ def update_price_cache(cache):
 
 def update_data(userid, portfolio, balance):
     # update the portfolio and balance for the user, given userid
+    portfolio = json.dumps(portfolio)
     cx.execute(
         "UPDATE users SET portfolio = ?, balance = ? WHERE id = ?",
         (portfolio, balance, userid),
@@ -98,6 +100,7 @@ def register_user(username, hash):
     if result.fetchone():
         return False
     portfolio = {}
+    portfolio = json.dumps(portfolio)
     # insert get_next_userid(),username,hash,portfolio, and a starting balance of 10k to the sql database
     cx.execute(
         "INSERT INTO users (id, username, password_hash, portfolio, balance) VALUES (?, ?, ?, ?, ?)",
