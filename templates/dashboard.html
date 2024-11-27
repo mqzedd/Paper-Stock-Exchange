@@ -20,10 +20,19 @@
 
     </div>
     <!-- mislabelled but i dont have time to fix and it works ok -->
-    <form action="{{ url_for('search') }}" method="post"> <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <button type="submit">Login</button>
+    <form id="searchForm">
+        <label for="search">Search:</label>
+        <input type="text" id="search" required>
+        <button type="submit">Search</button>
     </form>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        form.onsubmit = function (event) {
+            const searchTerm = document.getElementById('search').value;
+            form.action = `/search/${encodeURIComponent(searchTerm)}`;
+        };
+    </script>
 </body>
 
 </html>
