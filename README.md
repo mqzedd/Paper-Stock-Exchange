@@ -15,6 +15,6 @@ To use:
 ```
 python app.py
 ```
-navigate to HTTP://127.0.0.1:5000/
+navigate to the url presented by flask as the local server
 
 
